@@ -48,6 +48,7 @@ jobs:
 
       - name: Install Seismic Foundry (sforge & ssolc)
         run: |
+          export XDG_CONFIG_HOME="$HOME"
           curl -fsSL https://raw.githubusercontent.com/SeismicSystems/seismic-foundry/seismic/foundryup/install | bash
           echo "$HOME/.seismic/bin" >> "$GITHUB_PATH"
           TAG="$(curl -fsSLI -o /dev/null -w '%{url_effective}' https://github.com/SeismicSystems/seismic-foundry/releases/latest | awk -F/ '{print $NF}')"
