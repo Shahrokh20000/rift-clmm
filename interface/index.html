@@ -1,0 +1,2205 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Rift DEX — Confidential Concentrated Liquidity</title>
+
+        <!-- Browser Tab Favicon (SVG Data URI) -->
+        <link
+            rel="icon"
+            type="image/svg+xml"
+            href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'><defs><linearGradient id='g1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='50%25' stop-color='%23E6D3C1'/><stop offset='100%25' stop-color='%23B89C82'/></linearGradient><linearGradient id='g2' x1='0%25' y1='100%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='%238B735B'/><stop offset='100%25' stop-color='%23CFB297'/></linearGradient></defs><path d='M16 2L28 9V23L16 30L4 23V9L16 2Z' fill='%230d0c12' stroke='url(%23g1)' stroke-width='1.5'/><path d='M15.5 6L7.5 15.5H13.5L11.5 25L15.5 17.5V6Z' fill='url(%23g1)'/><path d='M17.5 7.5V15L21.5 9L19.5 16.5H24.5L16.5 26V17.5L17.5 7.5Z' fill='url(%23g2)'/><circle cx='16' cy='16' r='2' fill='%23FFFFFF'/></svg>"
+        />
+
+        <!-- Google Fonts: Plus Jakarta Sans, Space Grotesk & JetBrains Mono -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+            rel="stylesheet"
+        />
+
+        <!-- Google Material Icons -->
+        <link
+            href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/src/style.css" />
+    </head>
+    <body>
+        <!-- Ambient Background Canvas Elements -->
+        <div class="ambient-glow ambient-glow-1" aria-hidden="true"></div>
+        <div class="ambient-glow ambient-glow-2" aria-hidden="true"></div>
+        <div class="ambient-grid" aria-hidden="true"></div>
+
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-left">
+                <!-- Mobile Menu Toggle -->
+                <button
+                    id="mobile-menu-btn"
+                    class="mobile-menu-btn icon-btn"
+                    aria-label="Menu"
+                >
+                    <span class="material-icons-round">menu</span>
+                </button>
+                <div class="logo hide-on-mobile">
+                    <svg
+                        class="logo-svg"
+                        width="28"
+                        height="28"
+                        viewBox="0 0 32 32"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        style="
+                            filter: drop-shadow(
+                                0 0 10px rgba(230, 211, 193, 0.35)
+                            );
+                            flex-shrink: 0;
+                        "
+                    >
+                        <defs>
+                            <linearGradient
+                                id="rift-gold-grad"
+                                x1="0%"
+                                y1="0%"
+                                x2="100%"
+                                y2="100%"
+                            >
+                                <stop offset="0%" stop-color="#FFFFFF" />
+                                <stop offset="50%" stop-color="#E6D3C1" />
+                                <stop offset="100%" stop-color="#B89C82" />
+                            </linearGradient>
+                            <linearGradient
+                                id="rift-dark-grad"
+                                x1="0%"
+                                y1="100%"
+                                x2="100%"
+                                y2="0%"
+                            >
+                                <stop offset="0%" stop-color="#8B735B" />
+                                <stop offset="100%" stop-color="#CFB297" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Outer Shielded Octagon / Diamond Frame -->
+                        <path
+                            d="M16 2L28 9V23L16 30L4 23V9L16 2Z"
+                            fill="rgba(230, 211, 193, 0.06)"
+                            stroke="url(#rift-gold-grad)"
+                            stroke-width="1.5"
+                        />
+                        <!-- Left Rift Shard -->
+                        <path
+                            d="M15.5 6L7.5 15.5H13.5L11.5 25L15.5 17.5V6Z"
+                            fill="url(#rift-gold-grad)"
+                        />
+                        <!-- Right Liquidity Shard -->
+                        <path
+                            d="M17.5 7.5V15L21.5 9L19.5 16.5H24.5L16.5 26V17.5L17.5 7.5Z"
+                            fill="url(#rift-dark-grad)"
+                        />
+                        <!-- Core Rift Portal Dot -->
+                        <circle cx="16" cy="16" r="2" fill="#FFFFFF" />
+                    </svg>
+                    <span class="logo-text">Rift DEX</span>
+                    <span class="protocol-badge">V3</span>
+                </div>
+            </div>
+
+            <!-- Overlay for mobile menu (inside header stacking context) -->
+            <div id="mobile-overlay" class="mobile-overlay"></div>
+
+            <!-- Navigation Links -->
+            <nav class="nav-links" id="nav-links">
+                <!-- Close button for mobile menu -->
+                <button
+                    id="close-mobile-menu-btn"
+                    class="close-mobile-menu-btn icon-btn show-on-mobile-only"
+                    aria-label="Close Menu"
+                >
+                    <span class="material-icons-round">close</span>
+                </button>
+                <a href="/dashboard" class="nav-item" id="nav-dashboard">
+                    <span class="material-icons-round nav-icon">insights</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/swap" class="nav-item active" id="nav-swap">
+                    <span class="material-icons-round nav-icon"
+                        >swap_horiz</span
+                    >
+                    <span>Swap</span>
+                </a>
+                <a href="/pool" class="nav-item" id="nav-pool">
+                    <span class="material-icons-round nav-icon"
+                        >water_drop</span
+                    >
+                    <span>Pool</span>
+                </a>
+                <a href="/faucet" class="nav-item" id="nav-faucet">
+                    <span class="material-icons-round nav-icon">bolt</span>
+                    <span>Faucet</span>
+                </a>
+            </nav>
+
+            <!-- Network & Wallet Section -->
+            <div class="header-right">
+                <!-- Network Selector -->
+                <div class="network-selector">
+                    <button id="network-btn" class="network-btn glass-btn" aria-expanded="false">
+                        <span id="header-rpc-dot" class="network-status-dot"></span>
+                        <img
+                            src="/brand/seismic-logo.png"
+                            alt="Seismic Logo"
+                            class="network-logo"
+                            onerror="this.style.display = 'none'"
+                        />
+                        <span class="network-name hide-on-mobile"
+                            >Seismic Testnet</span
+                        >
+                        <span class="material-icons-round chevron-sm"
+                            >expand_more</span
+                        >
+                    </button>
+                    <div id="network-dropdown" class="dropdown-menu hidden">
+                        <div class="dropdown-section-label">Network &amp; RPC Status</div>
+                        <div class="dropdown-item network-option active">
+                            <span id="dropdown-rpc-dot" class="network-status-dot"></span>
+                            <img
+                                src="/brand/seismic-logo.png"
+                                alt="Seismic"
+                                class="network-logo"
+                                onerror="this.style.display = 'none'"
+                            />
+                            <div class="network-option-meta">
+                                <span>Seismic Testnet</span>
+                                <span id="dropdown-rpc-status" class="rpc-status-subtext">Checking RPC...</span>
+                            </div>
+                            <span class="material-icons-round check-icon"
+                                >check</span
+                            >
+                        </div>
+                        <button id="retry-rpc-btn" class="secondary-btn glass-btn rpc-check-btn">
+                            <span class="material-icons-round" style="font-size: 16px">refresh</span>
+                            Check RPC Connection
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Wallet Connect Button / Address Display -->
+                <div class="relative-container">
+                    <button
+                        id="header-connect-btn"
+                        class="connect-btn glass-btn"
+                    >
+                        Connect Wallet
+                    </button>
+
+                    <!-- Wallet Dropdown (Visible only after connection) -->
+                    <div
+                        id="wallet-dropdown"
+                        class="dropdown-menu wallet-dropdown-menu hidden"
+                    >
+                        <div class="wallet-dropdown-header">
+                            <span class="wallet-status-badge">
+                                <span class="network-status-dot"></span>
+                                Connected
+                            </span>
+                            <span id="wallet-native-balance" class="wallet-network-tag">0 SIZE</span>
+                        </div>
+                        <div class="dropdown-item">
+                            <span>Wallet Address</span>
+                            <div class="copy-group">
+                                <span id="display-address" class="truncate"
+                                    >0x...</span
+                                >
+                                <span
+                                    class="material-icons-round copy-icon"
+                                    data-copy-target="address"
+                                    title="Copy Address"
+                                    >content_copy</span
+                                >
+                                <a
+                                    id="wallet-explorer-link"
+                                    href="#"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="material-icons-round copy-icon wallet-explorer-icon"
+                                    title="View on Seismic Explorer"
+                                    >open_in_new</a
+                                >
+                            </div>
+                        </div>
+                        <div class="dropdown-item">
+                            <span>Session Private Key</span>
+                            <div class="copy-group">
+                                <span
+                                    id="display-pk"
+                                    class="truncate hidden-text"
+                                    >********</span
+                                >
+                                <span
+                                    class="material-icons-round copy-icon"
+                                    data-copy-target="pk"
+                                    title="Copy Private Key"
+                                    >content_copy</span
+                                >
+                                <span
+                                    class="material-icons-round toggle-visibility-icon"
+                                    id="toggle-pk-visibility"
+                                    title="Toggle Visibility"
+                                    >visibility</span
+                                >
+                            </div>
+                        </div>
+                        <button
+                            id="disconnect-btn"
+                            class="secondary-btn glass-btn disconnect"
+                        >
+                            <span
+                                class="material-icons-round"
+                                style="font-size: 18px"
+                                >logout</span
+                            >
+                            Disconnect Wallet
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Wrapper -->
+        <main class="main-content">
+            <!-- Success Modal -->
+            <div id="success-modal" class="modal hidden">
+                <div class="modal-content glass-panel success-modal-content">
+                    <!-- Header: Icon & Title -->
+                    <div class="text-center">
+                        <div class="success-icon-wrapper">
+                            <span class="material-icons-round success-icon-sm"
+                                >check_circle</span
+                            >
+                        </div>
+                        <h2 id="success-title" class="success-title">
+                            Transaction Successful
+                        </h2>
+                    </div>
+
+                    <!-- Receipt Box: Transaction Details injected here -->
+                    <div id="success-message" class="receipt-box">
+                        <span class="text-secondary-color text-sm"
+                            >Processing details...</span
+                        >
+                    </div>
+
+                    <!-- Explorer Link (Hidden by default until Tx Hash is available) -->
+                    <div class="text-center mb-1-5rem">
+                        <a
+                            href="#"
+                            target="_blank"
+                            id="success-explorer-link"
+                            class="explorer-link d-none"
+                        >
+                            View on Explorer
+                            <span
+                                class="material-icons-round"
+                                style="font-size: 14px"
+                                >open_in_new</span
+                            >
+                        </a>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex-col-gap08">
+                        <button
+                            id="close-success-btn"
+                            class="primary-btn glass-btn w-full"
+                        >
+                            Done
+                        </button>
+
+                        <!-- Share on X Button -->
+                        <button
+                            id="share-x-btn"
+                            class="outline-btn w-full flex-align-center-gap8"
+                            style="justify-content: center"
+                        >
+                            <svg
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 22.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+                                />
+                            </svg>
+                            Share on X
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== SWAP VIEW ==================== -->
+            <div id="view-swap" class="swap-container glass-panel view-section">
+                <!-- Swap Header with Settings -->
+                <div class="swap-header">
+                    <div class="swap-header-titles">
+                        <h2>Swap</h2>
+                        <span class="swap-subtitle-pill">
+                            <span class="material-icons-round" style="font-size: 12px">verified_user</span>
+                            Shielded V3
+                        </span>
+                    </div>
+                    <button
+                        id="settings-btn"
+                        class="icon-btn settings-trigger-btn"
+                        title="Transaction Settings"
+                        aria-label="Transaction Settings"
+                    >
+                        <span class="material-icons-round">tune</span>
+                    </button>
+                </div>
+
+                <div class="swap-body">
+                    <!-- From Token Box -->
+                    <div class="swap-module-box">
+                        <div class="swap-input-header">
+                            <span class="module-label">You Pay</span>
+                            <div class="balance-actions-group">
+                                <button type="button" id="swap-half-btn" class="quick-pct-btn d-none" title="Fill 50% of balance">50%</button>
+                                <button type="button" id="swap-max-btn" class="quick-pct-btn d-none" title="Fill maximum balance">MAX</button>
+                                <span class="balance-badge">
+                                    <span
+                                        class="material-icons-round balance-wallet-icon"
+                                        >account_balance_wallet</span
+                                    >
+                                    <span id="from-balance">0.0000</span>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- From Token Input Group -->
+                        <div class="input-group">
+                            <input
+                                type="number"
+                                min="0"
+                                step="any"
+                                inputmode="decimal"
+                                placeholder="0.0"
+                                id="from-amount"
+                                class="tokenIn"
+                                data-ca="0xc59fb7a8D9bf1c5863D000724c420F701B349A92"
+                            />
+                            <button
+                                id="from-token-select"
+                                class="token-select-btn glass-btn"
+                                data-side="from"
+                            >
+                                <span id="from-token-symbol">
+                                    <div class="flex-align-center-gap8">
+                                        <div
+                                            class="token-icon token-icon-sm faucet-icon-gmic m-0"
+                                            style="overflow: hidden; padding: 0"
+                                        >
+                                            <img
+                                                src="/token-logo/gmic.png"
+                                                alt="GMIC"
+                                                class="token-logo-img"
+                                                onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                            />
+                                            <span
+                                                class="token-fallback-char"
+                                                style="display: none"
+                                                >G</span
+                                            >
+                                        </div>
+                                        <span class="token-symbol-text"
+                                            >GMIC</span
+                                        >
+                                    </div>
+                                </span>
+                                <span class="material-icons-round chevron-icon"
+                                    >expand_more</span
+                                >
+                            </button>
+                        </div>
+                        <!-- Loading Indicator for Input (Top) -->
+                        <div
+                            id="from-loading"
+                            class="input-loading-indicator d-none"
+                        >
+                            <div class="spinner-small"></div>
+                            <span class="loading-text-sm"
+                                >Fetching optimal V3 route...</span
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Switch Direction Button -->
+                    <div class="switch-container">
+                        <button
+                            id="switch-btn"
+                            class="switch-btn glass-btn"
+                            title="Switch tokens"
+                            aria-label="Switch tokens"
+                        >
+                            <span class="material-icons-round">swap_vert</span>
+                        </button>
+                    </div>
+
+                    <!-- To Token Box -->
+                    <div class="swap-module-box">
+                        <div class="swap-input-header">
+                            <span class="module-label">You Receive</span>
+                            <span class="balance-badge">
+                                <span
+                                    class="material-icons-round balance-wallet-icon"
+                                    >account_balance_wallet</span
+                                >
+                                <span id="to-balance">0.0000</span>
+                            </span>
+                        </div>
+                        <div class="input-group">
+                            <input
+                                type="number"
+                                min="0"
+                                step="any"
+                                inputmode="decimal"
+                                placeholder="0.0"
+                                id="to-amount"
+                                class="tokenOut"
+                                data-ca="0x63130c77500Cebf7f6B9f01545Fc4F3925dFe007"
+                            />
+                            <button
+                                id="to-token-select"
+                                class="token-select-btn glass-btn"
+                                data-side="to"
+                            >
+                                <span id="to-token-symbol">
+                                    <div class="flex-align-center-gap8">
+                                        <div
+                                            class="token-icon token-icon-sm bg-purple m-0"
+                                            style="overflow: hidden; padding: 0"
+                                        >
+                                            <img
+                                                src="/token-logo/rift.png"
+                                                alt="RFT"
+                                                class="token-logo-img"
+                                                onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                            />
+                                            <span
+                                                class="token-fallback-char"
+                                                style="display: none"
+                                                >R</span
+                                            >
+                                        </div>
+                                        <span class="token-symbol-text"
+                                            >RFT</span
+                                        >
+                                    </div>
+                                </span>
+                                <span class="material-icons-round chevron-icon"
+                                    >expand_more</span
+                                >
+                            </button>
+                        </div>
+                        <!-- Loading Indicator for Input (Bottom) -->
+                        <div
+                            id="to-loading"
+                            class="input-loading-indicator d-none"
+                        >
+                            <div class="spinner-small"></div>
+                            <span class="loading-text-sm"
+                                >Fetching optimal V3 route...</span
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Live Quote & Route Breakdown -->
+                    <div id="swap-quote-card" class="swap-quote-card d-none">
+                        <div class="quote-row">
+                            <span class="quote-label">Rate</span>
+                            <button type="button" id="invert-rate-btn" class="quote-rate-btn mono-num" title="Click to invert rate">
+                                --
+                            </button>
+                        </div>
+                        <div class="quote-row">
+                            <span class="quote-label">Route</span>
+                            <span id="quote-route-badge" class="quote-route-pill mono-num">--</span>
+                        </div>
+                        <div class="quote-row">
+                            <span class="quote-label">
+                                Min. Received
+                                <button type="button" id="quote-slippage-trigger" class="inline-slippage-pill mono-num">(0.3% slip.)</button>
+                            </span>
+                            <span id="quote-min-received" class="quote-val mono-num">--</span>
+                        </div>
+                    </div>
+
+                    <!-- Inline Swap Alert (RPC / Liquidity Feedback) -->
+                    <div id="swap-inline-alert" class="inline-alert d-none"></div>
+
+                    <!-- Main Call to Action Button -->
+                    <button id="main-action-btn" class="main-btn glass-btn">
+                        Connect Wallet
+                    </button>
+                </div>
+            </div>
+
+            <!-- ==================== FAUCET VIEW ==================== -->
+            <div
+                id="view-faucet"
+                class="faucet-container glass-panel view-section d-none"
+            >
+                <div class="swap-header faucet-top-header">
+                    <div>
+                        <span class="eyebrow-tag">Seismic Testnet</span>
+                        <h2>Testnet Faucet</h2>
+                    </div>
+                    <p class="faucet-subtitle">
+                        Claim confidential SRC-20 test assets to explore swaps &
+                        concentrated liquidity.
+                    </p>
+                </div>
+
+                <div id="faucet-checklist" class="faucet-steps-bar">
+                    <div id="faucet-step-wallet" class="faucet-step-item">
+                        <span class="faucet-step-dot">1</span>
+                        <span>Connect Wallet</span>
+                    </div>
+                    <span class="faucet-step-sep">→</span>
+                    <div id="faucet-step-discord" class="faucet-step-item">
+                        <span class="faucet-step-dot">2</span>
+                        <span>Verify Discord</span>
+                    </div>
+                    <span class="faucet-step-sep">→</span>
+                    <div id="faucet-step-claim" class="faucet-step-item">
+                        <span class="faucet-step-dot">3</span>
+                        <span>Claim Test Tokens</span>
+                    </div>
+                </div>
+
+                <div id="discord-auth-section" class="discord-auth-panel">
+                    <div class="discord-info-block">
+                        <div class="discord-badge-icon">
+                            <span class="material-icons-round"
+                                >verified_user</span
+                            >
+                        </div>
+                        <div>
+                            <h3 class="discord-title">
+                                Discord Sybil Protection
+                            </h3>
+                            <p class="discord-desc">
+                                Authenticate your Discord account to unlock
+                                testnet token claims (1 claim / 24h per token).
+                            </p>
+                        </div>
+                    </div>
+
+                    <button
+                        id="discord-login-btn"
+                        class="primary-btn glass-btn discord-login-btn"
+                    >
+                        <span
+                            class="material-icons-round"
+                            style="font-size: 18px"
+                            >login</span
+                        >
+                        <span class="btn-label">Login with Discord</span>
+                    </button>
+
+                    <div
+                        id="discord-user-info"
+                        class="discord-user-info d-none"
+                    >
+                        <span class="discord-verified-pill">
+                            <span class="network-status-dot"></span>
+                            <span id="discord-username" class="discord-username"
+                                >Username</span
+                            >
+                        </span>
+                        <button
+                            id="discord-logout-btn"
+                            class="secondary-btn glass-btn discord-logout-btn"
+                        >
+                            Logout
+                        </button>
+                    </div>
+                </div>
+
+                <div class="faucet-grid">
+                    <!-- Faucet Card 1: sUSDC -->
+                    <div class="faucet-card glass-panel faucet-card-usdc">
+                        <div class="faucet-card-top">
+                            <div
+                                class="token-icon default-icon usdc m-0"
+                                style="overflow: hidden; padding: 0"
+                            >
+                                <img
+                                    src="/token-logo/susdc.png"
+                                    alt="sUSDC"
+                                    class="token-logo-img"
+                                    onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                />
+                                <span
+                                    class="token-fallback-char"
+                                    style="display: none"
+                                    >S</span
+                                >
+                            </div>
+                            <span class="faucet-Allocation-tag"
+                                >0.1 sUSDC / Claim</span
+                            >
+                        </div>
+                        <h3>sUSDC</h3>
+                        <p class="token-full-name">Seismic USD Coin</p>
+                        <div class="ca-copy-box">
+                            <span class="truncate">0x7907...1c43</span>
+                            <span
+                                class="material-icons-round copy-icon"
+                                data-copy-text="0x790701048922e265105fd6a4467a2901c2201c43"
+                                title="Copy Address"
+                                >content_copy</span
+                            >
+                        </div>
+                        <button
+                            id="claim-susdc-btn"
+                            class="main-btn glass-btn faucet-claim-btn"
+                            data-ca="0x790701048922e265105fd6a4467a2901c2201c43"
+                        >
+                            Claim sUSDC
+                        </button>
+                    </div>
+
+                    <!-- Faucet Card 2: RFT -->
+                    <div class="faucet-card glass-panel faucet-card-rft">
+                        <div class="faucet-card-top">
+                            <div
+                                class="token-icon m-0 bg-purple"
+                                style="overflow: hidden; padding: 0"
+                            >
+                                <img
+                                    src="/token-logo/rift.png"
+                                    alt="RFT"
+                                    class="token-logo-img"
+                                    onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                />
+                                <span
+                                    class="token-fallback-char"
+                                    style="display: none"
+                                    >R</span
+                                >
+                            </div>
+                            <span class="faucet-Allocation-tag"
+                                >10 RFT / Claim</span
+                            >
+                        </div>
+                        <h3>RFT</h3>
+                        <p class="token-full-name">Rift Protocol Token</p>
+                        <div class="ca-copy-box">
+                            <span class="truncate">0x631..007</span>
+                            <span
+                                class="material-icons-round copy-icon"
+                                data-copy-text="0x63130c77500Cebf7f6B9f01545Fc4F3925dFe007"
+                                title="Copy Address"
+                                >content_copy</span
+                            >
+                        </div>
+                        <button
+                            id="claim-rft-btn"
+                            class="main-btn glass-btn faucet-claim-btn"
+                            data-ca="0x63130c77500Cebf7f6B9f01545Fc4F3925dFe007"
+                        >
+                            Claim RFT
+                        </button>
+                    </div>
+
+                    <!-- Faucet Card 3: GMIC -->
+                    <div class="faucet-card glass-panel faucet-card-gmic">
+                        <div class="faucet-card-top">
+                            <div
+                                class="token-icon faucet-icon-gmic m-0"
+                                style="overflow: hidden; padding: 0"
+                            >
+                                <img
+                                    src="/token-logo/gmic.png"
+                                    alt="GMIC"
+                                    class="token-logo-img"
+                                    onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                />
+                                <span
+                                    class="token-fallback-char"
+                                    style="display: none"
+                                    >G</span
+                                >
+                            </div>
+                            <span class="faucet-Allocation-tag"
+                                >10 GMIC / Claim</span
+                            >
+                        </div>
+                        <h3>GMIC</h3>
+                        <p class="token-full-name">Seismic GMIC Token</p>
+                        <div class="ca-copy-box">
+                            <span class="truncate">0xc59..9A92</span>
+                            <span
+                                class="material-icons-round copy-icon"
+                                data-copy-text="0xc59fb7a8D9bf1c5863D000724c420F701B349A92"
+                                title="Copy Address"
+                                >content_copy</span
+                            >
+                        </div>
+                        <button
+                            id="claim-gmic-btn"
+                            class="main-btn glass-btn faucet-claim-btn"
+                            data-ca="0xc59fb7a8D9bf1c5863D000724c420F701B349A92"
+                        >
+                            Claim GMIC
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard View -->
+            <div
+                id="view-dashboard"
+                class="swap-container dashboard-preview-container glass-panel view-section d-none"
+            >
+                <div class="dashboard-hero">
+                    <span class="eyebrow-tag">Protocol Telemetry</span>
+                    <h2 class="text-center">Analytics Hub</h2>
+                    <p class="dashboard-subtext">
+                        Confidential liquidity metrics, live Seismic Testnet RPC telemetry, and quick protocol actions.
+                    </p>
+                </div>
+                <div class="dashboard-stats-preview">
+                    <div class="stat-preview-card">
+                        <span class="stat-preview-label"
+                            >Total Value Locked (Est.)</span
+                        >
+                        <span class="stat-preview-val">$1.24M</span>
+                        <span class="stat-preview-delta">+14.2%</span>
+                    </div>
+                    <div class="stat-preview-card">
+                        <span class="stat-preview-label">24h Swap Volume (Est.)</span>
+                        <span class="stat-preview-val">$482.9K</span>
+                        <span class="stat-preview-delta">+8.7%</span>
+                    </div>
+                    <div class="stat-preview-card">
+                        <span class="stat-preview-label">Seismic RPC Block</span>
+                        <span id="dashboard-live-block" class="stat-preview-val">Checking...</span>
+                        <span id="dashboard-live-latency" class="stat-preview-delta">Seismic TEE</span>
+                    </div>
+                </div>
+                <div class="dashboard-cta-row">
+                    <button id="dash-go-swap" class="primary-btn glass-btn">
+                        <span class="material-icons-round" style="font-size: 18px">swap_horiz</span>
+                        Trade on Swap
+                    </button>
+                    <button id="dash-go-pool" class="secondary-btn glass-btn">
+                        <span class="material-icons-round" style="font-size: 18px">water_drop</span>
+                        Explore V3 Pools
+                    </button>
+                    <button id="dash-go-faucet" class="secondary-btn glass-btn">
+                        <span class="material-icons-round" style="font-size: 18px">bolt</span>
+                        Testnet Faucet
+                    </button>
+                </div>
+            </div>
+
+            <!-- ==================== POOL VIEW ==================== -->
+            <div id="view-pool" class="view-section d-none pool-view-wrapper">
+                <!-- State 1: Pool Dashboard -->
+                <div id="pool-dashboard" class="pool-dashboard-grid">
+                    <!-- Left Column -->
+                    <div class="pool-left-col flex-col-gap1">
+                        <div class="glass-panel pool-cta-card">
+                            <span class="eyebrow-tag"
+                                >Concentrated Liquidity</span
+                            >
+                            <h3>Liquidity Positions</h3>
+                            <p>
+                                Provide capital within custom price ranges to
+                                maximize fee efficiency on Rift V3.
+                            </p>
+                            <div class="pool-cta-actions">
+                                <button
+                                    id="btn-new-position"
+                                    class="primary-btn glass-btn btn-new-pos"
+                                >
+                                    <span class="material-icons-round"
+                                        >add_circle</span
+                                    >
+                                    New Position
+                                </button>
+
+                                <button
+                                    id="btn-my-positions"
+                                    class="secondary-btn glass-btn btn-new-pos"
+                                >
+                                    <span class="material-icons-round"
+                                        >layers</span
+                                    >
+                                    My Positions
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column (Popular Pools) -->
+                    <div class="pool-right-col glass-panel pool-panel">
+                        <div class="pool-panel-header">
+                            <div>
+                                <span class="eyebrow-tag">Top Markets</span>
+                                <h3 class="pool-panel-title">Popular Pools</h3>
+                            </div>
+                            <span class="live-indicator-badge">
+                                <span class="network-status-dot"></span>
+                                Live APR
+                            </span>
+                        </div>
+                        <div class="popular-pools-list" id="popular-pools-list">
+                            <!-- Pool 1: RFT / GMIC -->
+                            <div
+                                class="pool-list-item"
+                                tabindex="0"
+                                role="button"
+                                data-address="0x96906aa4928212b4665d298788f3c7ad7e550326"
+                                data-token-a-symbol="RFT"
+                                data-token-a-address="0x63130c77500Cebf7f6B9f01545Fc4F3925dFe007"
+                                data-token-b-symbol="GMIC"
+                                data-token-b-address="0xc59fb7a8D9bf1c5863D000724c420F701B349A92"
+                                data-fee="3000"
+                            >
+                                <div class="pool-list-header">
+                                    <div class="pair-icons-stack">
+                                        <div
+                                            class="token-icon pool-mini-icon bg-purple"
+                                            style="overflow: hidden; padding: 0"
+                                        >
+                                            <img
+                                                src="/token-logo/rift.png"
+                                                alt="RFT"
+                                                class="token-logo-img"
+                                                onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                            />
+                                            <span
+                                                class="token-fallback-char"
+                                                style="display: none"
+                                                >R</span
+                                            >
+                                        </div>
+                                        <div
+                                            class="token-icon pool-mini-icon pool-icon-overlap faucet-icon-gmic"
+                                            style="
+                                                margin-left: -10px;
+                                                overflow: hidden;
+                                                padding: 0;
+                                            "
+                                        >
+                                            <img
+                                                src="/token-logo/gmic.png"
+                                                alt="GMIC"
+                                                class="token-logo-img"
+                                                onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                            />
+                                            <span
+                                                class="token-fallback-char"
+                                                style="display: none"
+                                                >G</span
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="pool-pair-meta">
+                                        <div class="flex-align-center-gap8">
+                                            <span class="pool-pair-name"
+                                                >RFT / GMIC</span
+                                            >
+                                            <span class="fee-badge">0.3%</span>
+                                        </div>
+                                        <span class="pool-type-sub"
+                                            >Concentrated V3</span
+                                        >
+                                    </div>
+                                </div>
+                                <div class="pool-metrics-right">
+                                    <div class="pool-apr-text">142% APR</div>
+                                    <div class="pool-tvl-text">TVL: $1.4M</div>
+                                </div>
+                            </div>
+
+                            <!-- Pool 2: RFT / sUSDC -->
+                            <div
+                                class="pool-list-item"
+                                tabindex="0"
+                                role="button"
+                                data-address="0x003f091ccdb1b39ad4dc29edaf606bef692cc482"
+                                data-token-a-symbol="RFT"
+                                data-token-a-address="0x63130c77500Cebf7f6B9f01545Fc4F3925dFe007"
+                                data-token-b-symbol="sUSDC"
+                                data-token-b-address="0x790701048922e265105fd6a4467a2901c2201c43"
+                                data-fee="3000"
+                            >
+                                <div class="pool-list-header">
+                                    <div class="pair-icons-stack">
+                                        <div
+                                            class="token-icon pool-mini-icon bg-purple"
+                                            style="overflow: hidden; padding: 0"
+                                        >
+                                            <img
+                                                src="/token-logo/rift.png"
+                                                alt="RFT"
+                                                class="token-logo-img"
+                                                onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                            />
+                                            <span
+                                                class="token-fallback-char"
+                                                style="display: none"
+                                                >R</span
+                                            >
+                                        </div>
+                                        <div
+                                            class="token-icon default-icon usdc pool-mini-icon pool-icon-overlap"
+                                            style="
+                                                margin-left: -10px;
+                                                overflow: hidden;
+                                                padding: 0;
+                                            "
+                                        >
+                                            <img
+                                                src="/token-logo/susdc.png"
+                                                alt="sUSDC"
+                                                class="token-logo-img"
+                                                onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                            />
+                                            <span
+                                                class="token-fallback-char"
+                                                style="display: none"
+                                                >S</span
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="pool-pair-meta">
+                                        <div class="flex-align-center-gap8">
+                                            <span class="pool-pair-name"
+                                                >RFT / sUSDC</span
+                                            >
+                                            <span class="fee-badge">0.3%</span>
+                                        </div>
+                                        <span class="pool-type-sub"
+                                            >Concentrated V3</span
+                                        >
+                                    </div>
+                                </div>
+                                <div class="pool-metrics-right">
+                                    <div class="pool-apr-text">124% APR</div>
+                                    <div class="pool-tvl-text">TVL: $1.2M</div>
+                                </div>
+                            </div>
+
+                            <!-- Pool 3: GMIC / sUSDC -->
+                            <div
+                                class="pool-list-item"
+                                tabindex="0"
+                                role="button"
+                                data-address="0xaaafd1a44a3f2de131bfa2721138cd08ac55a01b"
+                                data-token-a-symbol="GMIC"
+                                data-token-a-address="0xc59fb7a8D9bf1c5863D000724c420F701B349A92"
+                                data-token-b-symbol="sUSDC"
+                                data-token-b-address="0x790701048922e265105fd6a4467a2901c2201c43"
+                                data-fee="3000"
+                            >
+                                <div class="pool-list-header">
+                                    <div class="pair-icons-stack">
+                                        <div
+                                            class="token-icon pool-mini-icon faucet-icon-gmic"
+                                            style="overflow: hidden; padding: 0"
+                                        >
+                                            <img
+                                                src="/token-logo/gmic.png"
+                                                alt="GMIC"
+                                                class="token-logo-img"
+                                                onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                            />
+                                            <span
+                                                class="token-fallback-char"
+                                                style="display: none"
+                                                >G</span
+                                            >
+                                        </div>
+                                        <div
+                                            class="token-icon default-icon usdc pool-mini-icon pool-icon-overlap"
+                                            style="
+                                                margin-left: -10px;
+                                                overflow: hidden;
+                                                padding: 0;
+                                            "
+                                        >
+                                            <img
+                                                src="/token-logo/susdc.png"
+                                                alt="sUSDC"
+                                                class="token-logo-img"
+                                                onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                            />
+                                            <span
+                                                class="token-fallback-char"
+                                                style="display: none"
+                                                >S</span
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="pool-pair-meta">
+                                        <div class="flex-align-center-gap8">
+                                            <span class="pool-pair-name"
+                                                >GMIC / sUSDC</span
+                                            >
+                                            <span class="fee-badge">0.3%</span>
+                                        </div>
+                                        <span class="pool-type-sub"
+                                            >Concentrated V3</span
+                                        >
+                                    </div>
+                                </div>
+                                <div class="pool-metrics-right">
+                                    <div class="pool-apr-text">98% APR</div>
+                                    <div class="pool-tvl-text">TVL: $940K</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- State 3: My Positions List -->
+                <div
+                    id="pool-positions-page"
+                    class="glass-panel positions-page-panel d-none"
+                >
+                    <!-- Page Header -->
+                    <div class="positions-header-row positions-header-between">
+                        <div class="flex-align-center-gap12">
+                            <button
+                                id="btn-back-from-positions"
+                                class="icon-btn back-circle-btn"
+                                title="Back"
+                            >
+                                <span class="material-icons-round">arrow_back</span>
+                            </button>
+                            <div>
+                                <span class="eyebrow-tag">NFT Vaults</span>
+                                <h2>Your Positions</h2>
+                            </div>
+                        </div>
+                        <button
+                            id="btn-refresh-positions"
+                            class="secondary-btn glass-btn btn-sm-rounded"
+                            title="Refresh Positions"
+                        >
+                            <span class="material-icons-round" style="font-size: 16px">refresh</span>
+                            Refresh
+                        </button>
+                    </div>
+
+                    <div class="positions-table-wrapper">
+                        <!-- Table Header -->
+                        <div class="positions-table-header">
+                            <span class="text-left">Pool Pair & Fee</span>
+                            <span class="text-left">Range Status</span>
+                            <span class="text-right">Action</span>
+                        </div>
+
+                        <!-- Positions List -->
+                        <div
+                            id="positions-list-container"
+                            class="positions-list"
+                        >
+                            <!-- Loading State -->
+                            <div
+                                id="positions-loading"
+                                class="d-none empty-state-msg"
+                            >
+                                <div class="spinner spinner-md"></div>
+                                Fetching your on-chain V3 liquidity positions...
+                            </div>
+
+                            <!-- Empty State Message -->
+                            <div
+                                id="no-positions-msg"
+                                class="d-none empty-state-msg"
+                            >
+                                You don't have any active liquidity positions
+                                yet.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- State 4: Manage Position -->
+                <div
+                    id="pool-manage-position"
+                    class="glass-panel positions-page-panel d-none"
+                >
+                    <!-- Back to List Button -->
+                    <div class="mb-1-5rem">
+                        <button id="btn-back-to-list" class="icon-btn btn-back">
+                            <span class="material-icons-round text-lg"
+                                >arrow_back</span
+                            >
+                            Back to Positions
+                        </button>
+                    </div>
+
+                    <!-- Position Main Header -->
+                    <div class="manage-header">
+                        <div class="manage-header-left">
+                            <div class="d-flex pair-icons-stack">
+                                <div
+                                    id="manage-icon-0"
+                                    class="token-icon default-icon pool-mini-icon token-icon-md"
+                                ></div>
+                                <div
+                                    id="manage-icon-1"
+                                    class="token-icon pool-mini-icon pool-icon-overlap token-icon-md"
+                                ></div>
+                            </div>
+                            <div class="pos-pair-details">
+                                <div class="flex-align-center-gap8">
+                                    <span
+                                        id="manage-pair-name"
+                                        class="pos-pair-name text-xl"
+                                        >-- / --</span
+                                    >
+                                    <span
+                                        id="manage-fee-badge"
+                                        class="fee-badge text-sm"
+                                        >--%</span
+                                    >
+                                </div>
+                                <div
+                                    id="manage-status"
+                                    class="position-status in-range mt-xs"
+                                >
+                                    <span class="status-dot"></span>
+                                    <span id="manage-status-text"
+                                        >In range</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="manage-header-actions">
+                            <button
+                                id="btn-action-add"
+                                class="secondary-btn glass-btn btn-sm-rounded"
+                            >
+                                <span
+                                    class="material-icons-round"
+                                    style="font-size: 16px"
+                                    >add</span
+                                >
+                                Add Liquidity
+                            </button>
+                            <button
+                                id="btn-action-remove"
+                                class="secondary-btn glass-btn btn-sm-rounded"
+                            >
+                                <span
+                                    class="material-icons-round"
+                                    style="font-size: 16px"
+                                    >remove</span
+                                >
+                                Remove Liquidity
+                            </button>
+                            <button
+                                id="btn-action-collect"
+                                class="primary-btn glass-btn btn-sm-primary"
+                            >
+                                <span
+                                    class="material-icons-round"
+                                    style="font-size: 16px"
+                                    >auto_awesome</span
+                                >
+                                Collect Fees
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Main Grid -->
+                    <div class="manage-grid">
+                        <div class="manage-nft-container">
+                            <img
+                                id="manage-nft-image"
+                                src=""
+                                alt="Position NFT"
+                                class="nft-image"
+                            />
+                        </div>
+
+                        <div class="manage-data-container">
+                            <!-- Card 1: Underlying Liquidity -->
+                            <div class="glass-panel data-card">
+                                <h4 class="data-card-title">
+                                    <span
+                                        class="material-icons-round card-title-icon"
+                                        >account_balance</span
+                                    >
+                                    Underlying Liquidity
+                                </h4>
+
+                                <div class="data-row">
+                                    <div class="data-token-info">
+                                        <div
+                                            id="manage-row-icon-0"
+                                            class="token-icon pool-mini-icon token-icon-xs"
+                                        ></div>
+                                        <span
+                                            id="manage-sym0-amount"
+                                            class="font-semibold-1-1 mono-num"
+                                            >--</span
+                                        >
+                                    </div>
+                                    <span
+                                        id="manage-sym0-name"
+                                        class="text-secondary-color token-tag-pill"
+                                        >--</span
+                                    >
+                                </div>
+
+                                <div class="data-row mt-1rem">
+                                    <div class="data-token-info">
+                                        <div
+                                            id="manage-row-icon-1"
+                                            class="token-icon pool-mini-icon token-icon-xs"
+                                        ></div>
+                                        <span
+                                            id="manage-sym1-amount"
+                                            class="font-semibold-1-1 mono-num"
+                                            >--</span
+                                        >
+                                    </div>
+                                    <span
+                                        id="manage-sym1-name"
+                                        class="text-secondary-color token-tag-pill"
+                                        >--</span
+                                    >
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Unclaimed Fees -->
+                            <div class="glass-panel data-card">
+                                <h4 class="data-card-title">
+                                    <span
+                                        class="material-icons-round card-title-icon"
+                                        >toll</span
+                                    >
+                                    Unclaimed Fees
+                                </h4>
+
+                                <div class="data-row">
+                                    <div class="data-token-info">
+                                        <div
+                                            id="manage-fee-icon-0"
+                                            class="token-icon pool-mini-icon token-icon-xs"
+                                        ></div>
+                                        <span
+                                            id="manage-sym0-fee"
+                                            class="font-semibold-1-1 mono-num"
+                                            >--</span
+                                        >
+                                    </div>
+                                    <span
+                                        id="manage-sym0-fee-name"
+                                        class="text-secondary-color token-tag-pill"
+                                        >--</span
+                                    >
+                                </div>
+
+                                <div class="data-row mt-1rem">
+                                    <div class="data-token-info">
+                                        <div
+                                            id="manage-fee-icon-1"
+                                            class="token-icon pool-mini-icon token-icon-xs"
+                                        ></div>
+                                        <span
+                                            id="manage-sym1-fee"
+                                            class="font-semibold-1-1 mono-num"
+                                            >--</span
+                                        >
+                                    </div>
+                                    <span
+                                        id="manage-sym1-fee-name"
+                                        class="text-secondary-color token-tag-pill"
+                                        >--</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- State 2: New Position Form -->
+                <div
+                    id="pool-new-position"
+                    class="swap-container glass-panel d-none new-position-container"
+                >
+                    <div class="swap-header mb-1rem">
+                        <button
+                            id="btn-back-to-pool"
+                            class="icon-btn back-circle-btn"
+                            title="Back"
+                        >
+                            <span class="material-icons-round">arrow_back</span>
+                        </button>
+                        <h2>Add Liquidity</h2>
+                        <button
+                            id="pool-settings-btn"
+                            class="icon-btn settings-trigger-btn"
+                            title="Settings"
+                        >
+                            <span class="material-icons-round">tune</span>
+                        </button>
+                    </div>
+
+                    <div class="swap-body">
+                        <!-- Select Pair -->
+                        <label class="section-label">Select Pair</label>
+                        <div class="pair-select-container">
+                            <button
+                                id="pool-token-a-btn"
+                                class="token-select-btn glass-btn pair-select-btn"
+                            >
+                                <span id="pool-token-a-symbol"
+                                    >Select Token</span
+                                >
+                                <span class="material-icons-round chevron-icon"
+                                    >expand_more</span
+                                >
+                            </button>
+                            <button
+                                id="pool-token-b-btn"
+                                class="token-select-btn glass-btn pair-select-btn"
+                            >
+                                <span id="pool-token-b-symbol"
+                                    >Select Token</span
+                                >
+                                <span class="material-icons-round chevron-icon"
+                                    >expand_more</span
+                                >
+                            </button>
+                        </div>
+
+                        <!-- Fee Tier -->
+                        <div class="mb-1-5rem">
+                            <label class="section-label">Fee Tier</label>
+                            <div class="fee-tier-grid">
+                                <div
+                                    class="fee-card glass-panel"
+                                    data-fee="500"
+                                >
+                                    <div class="fee-card-header">
+                                        <span class="fee-percent">0.05%</span>
+                                        <span
+                                            class="material-icons-round check-icon d-none"
+                                            >check_circle</span
+                                        >
+                                    </div>
+                                    <p class="fee-desc">
+                                        Best for stable pairs.
+                                    </p>
+                                    <div class="fee-select-badge">
+                                        0% select
+                                    </div>
+                                </div>
+                                <div
+                                    class="fee-card glass-panel active"
+                                    data-fee="3000"
+                                >
+                                    <div class="fee-card-header">
+                                        <span class="fee-percent">0.3%</span>
+                                        <span
+                                            class="material-icons-round check-icon"
+                                            >check_circle</span
+                                        >
+                                    </div>
+                                    <p class="fee-desc">Best for most pairs.</p>
+                                    <div class="fee-select-badge">
+                                        100% select
+                                    </div>
+                                </div>
+                                <div
+                                    class="fee-card glass-panel"
+                                    data-fee="10000"
+                                >
+                                    <div class="fee-card-header">
+                                        <span class="fee-percent">1%</span>
+                                        <span
+                                            class="material-icons-round check-icon d-none"
+                                            >check_circle</span
+                                        >
+                                    </div>
+                                    <p class="fee-desc">
+                                        Best for exotic pairs.
+                                    </p>
+                                    <div class="fee-select-badge">
+                                        0% select
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Init Price Box -->
+                        <div
+                            id="init-price-container"
+                            class="glass-panel init-price-panel d-none"
+                        >
+                            <div class="init-price-header">
+                                <span class="init-price-title">
+                                    <span class="material-icons-round"
+                                        >auto_awesome</span
+                                    >
+                                    Initialize New Pool Price
+                                </span>
+                            </div>
+                            <div class="init-price-body">
+                                <input
+                                    type="text"
+                                    inputmode="decimal"
+                                    id="init-price-input"
+                                    placeholder="0.0"
+                                    class="init-price-input"
+                                />
+                            </div>
+                            <div class="init-price-footer">
+                                <span
+                                    id="init-price-ratio-text"
+                                    class="init-price-ratio-text"
+                                    >1 A = 0 B</span
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Current Price & Range Toggle -->
+                        <div
+                            id="range-settings-panel"
+                            class="glass-panel range-settings-panel d-none"
+                        >
+                            <div class="current-price-row">
+                                <span class="section-label"
+                                    >Current Pool Price</span
+                                >
+                                <span
+                                    id="pool-current-price"
+                                    class="current-price-value mono-num"
+                                    >--</span
+                                >
+                            </div>
+
+                            <div class="flex-between-center">
+                                <div class="flex-align-center-gap8">
+                                    <span class="section-label"
+                                        >Set Price Range</span
+                                    >
+                                    <span id="pool-range-status-badge" class="range-status-pill d-none">--</span>
+                                </div>
+                                <div class="range-toggle-group">
+                                    <span
+                                        class="range-toggle-label"
+                                        id="range-label"
+                                        >Custom</span
+                                    >
+                                    <label class="toggle-switch">
+                                        <input
+                                            type="checkbox"
+                                            id="full-range-toggle"
+                                        />
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Quick Range Presets -->
+                            <div class="range-presets-row" id="range-presets-row">
+                                <button type="button" class="range-preset-btn" data-pct="5">±5% Narrow</button>
+                                <button type="button" class="range-preset-btn" data-pct="15">±15% Balanced</button>
+                                <button type="button" class="range-preset-btn" data-pct="50">±50% Wide</button>
+                            </div>
+
+                            <!-- Min / Max Inputs -->
+                            <div class="min-max-container">
+                                <div class="min-max-group">
+                                    <span class="min-max-label">Min Price</span>
+                                    <input
+                                        type="text"
+                                        id="min-price-input"
+                                        inputmode="decimal"
+                                        placeholder="0.0"
+                                        class="min-max-input"
+                                    />
+                                </div>
+                                <div class="min-max-group">
+                                    <span class="min-max-label">Max Price</span>
+                                    <input
+                                        type="text"
+                                        id="max-price-input"
+                                        inputmode="decimal"
+                                        placeholder="0.0"
+                                        class="min-max-input"
+                                    />
+                                </div>
+                            </div>
+                            <div id="range-warning-msg" class="range-warning-msg d-none">
+                                Min price must be lower than Max price.
+                            </div>
+                        </div>
+
+                        <!-- Pool RPC Banner -->
+                        <div id="pool-rpc-banner" class="inline-alert d-none">
+                            <span id="pool-rpc-banner-text">Unable to reach Seismic Testnet RPC.</span>
+                            <button type="button" id="pool-retry-btn" class="inline-retry-btn">Retry</button>
+                        </div>
+
+                        <!-- Deposit Amounts -->
+                        <div
+                            id="deposit-wrapper-a"
+                            class="d-none deposit-group-margin"
+                        >
+                            <div class="deposit-input-header">
+                                <span>Deposit Amount</span>
+                                <div class="balance-actions-group">
+                                    <button type="button" id="pool-max-a-btn" class="quick-pct-btn">MAX</button>
+                                    <span>Balance:
+                                        <span
+                                            id="pool-balance-a"
+                                            class="text-primary-color mono-num"
+                                            >0.0000</span
+                                        ></span>
+                                </div>
+                            </div>
+                            <div class="input-group deposit-group">
+                                <input
+                                    type="number"
+                                    min="0"
+                                    step="any"
+                                    inputmode="decimal"
+                                    id="pool-amount-a"
+                                    placeholder="0.0"
+                                    class="deposit-input"
+                                />
+                                <span
+                                    id="pool-display-symbol-a"
+                                    class="deposit-symbol"
+                                    >Token A</span
+                                >
+                            </div>
+                        </div>
+
+                        <div
+                            id="deposit-wrapper-b"
+                            class="d-none deposit-group-margin-large"
+                        >
+                            <div class="deposit-input-header">
+                                <span>Deposit Amount</span>
+                                <div class="balance-actions-group">
+                                    <button type="button" id="pool-max-b-btn" class="quick-pct-btn">MAX</button>
+                                    <span>Balance:
+                                        <span
+                                            id="pool-balance-b"
+                                            class="text-primary-color mono-num"
+                                            >0.0000</span
+                                        ></span>
+                                </div>
+                            </div>
+                            <div class="input-group deposit-group">
+                                <input
+                                    type="number"
+                                    min="0"
+                                    step="any"
+                                    inputmode="decimal"
+                                    id="pool-amount-b"
+                                    placeholder="0.0"
+                                    class="deposit-input"
+                                />
+                                <span
+                                    id="pool-display-symbol-b"
+                                    class="deposit-symbol"
+                                    >Token B</span
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <button id="pool-action-btn" class="main-btn glass-btn">
+                            Select Tokens
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== ACTION Z-INDEX MODAL ==================== -->
+            <div id="action-modal" class="modal hidden">
+                <div class="modal-content glass-panel modal-md">
+                    <div class="modal-header">
+                        <h3 id="action-modal-title">Action</h3>
+                        <button class="close-btn" id="close-action-modal">
+                            <span class="material-icons-round">close</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body modal-body-gap">
+                        <!-- 1. Remove Liquidity Section -->
+                        <div id="action-section-remove" class="d-none">
+                            <div class="glass-panel action-card">
+                                <label class="section-label action-label"
+                                    >Withdrawal Amount (%)</label
+                                >
+                                <input
+                                    type="number"
+                                    id="remove-percent-input"
+                                    value="0"
+                                    placeholder="0"
+                                    class="percent-input-huge"
+                                />
+                                <div class="percent-btn-group">
+                                    <button
+                                        class="secondary-btn glass-btn percent-btn"
+                                        data-percent="25"
+                                    >
+                                        25%
+                                    </button>
+                                    <button
+                                        class="secondary-btn glass-btn percent-btn"
+                                        data-percent="50"
+                                    >
+                                        50%
+                                    </button>
+                                    <button
+                                        class="secondary-btn glass-btn percent-btn"
+                                        data-percent="75"
+                                    >
+                                        75%
+                                    </button>
+                                    <button
+                                        class="secondary-btn glass-btn percent-btn"
+                                        data-percent="100"
+                                    >
+                                        Max
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="action-data-list">
+                                <div class="data-row">
+                                    <span
+                                        id="remove-sym0-name"
+                                        class="text-secondary-color"
+                                        >--</span
+                                    >
+                                    <div class="data-token-info">
+                                        <div
+                                            id="remove-icon-0"
+                                            class="token-icon pool-mini-icon token-icon-xs"
+                                        ></div>
+                                        <span
+                                            id="remove-receive-0"
+                                            class="font-semibold-1-1 mono-num"
+                                            >0.00</span
+                                        >
+                                    </div>
+                                </div>
+                                <div class="data-row">
+                                    <span
+                                        id="remove-sym1-name"
+                                        class="text-secondary-color"
+                                        >--</span
+                                    >
+                                    <div class="data-token-info">
+                                        <div
+                                            id="remove-icon-1"
+                                            class="token-icon pool-mini-icon token-icon-xs"
+                                        ></div>
+                                        <span
+                                            id="remove-receive-1"
+                                            class="font-semibold-1-1 mono-num"
+                                            >0.00</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Add Liquidity Section -->
+                        <div id="action-section-add" class="d-none">
+                            <div id="add-wrapper-0" class="mb-1-5rem">
+                                <div class="deposit-input-header">
+                                    <span>Deposit Amount</span>
+                                    <span
+                                        >Balance:
+                                        <span
+                                            id="add-balance-0"
+                                            class="text-primary-color mono-num"
+                                            >0.0000</span
+                                        ></span
+                                    >
+                                </div>
+                                <div class="input-group deposit-group">
+                                    <input
+                                        type="number"
+                                        id="add-amount-0"
+                                        placeholder="0.0"
+                                        class="deposit-input"
+                                    />
+                                    <div class="flex-align-center-gap8">
+                                        <div
+                                            id="add-icon-0"
+                                            class="token-icon pool-mini-icon token-icon-xs"
+                                        ></div>
+                                        <span
+                                            id="add-sym0-name"
+                                            class="deposit-symbol"
+                                            >Token A</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="add-wrapper-1">
+                                <div class="deposit-input-header">
+                                    <span>Deposit Amount</span>
+                                    <span
+                                        >Balance:
+                                        <span
+                                            id="add-balance-1"
+                                            class="text-primary-color mono-num"
+                                            >0.0000</span
+                                        ></span
+                                    >
+                                </div>
+                                <div class="input-group deposit-group">
+                                    <input
+                                        type="number"
+                                        id="add-amount-1"
+                                        placeholder="0.0"
+                                        class="deposit-input"
+                                    />
+                                    <div class="flex-align-center-gap8">
+                                        <div
+                                            id="add-icon-1"
+                                            class="token-icon pool-mini-icon token-icon-xs"
+                                        ></div>
+                                        <span
+                                            id="add-sym1-name"
+                                            class="deposit-symbol"
+                                            >Token B</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Collect Fees Section -->
+                        <div id="action-section-collect" class="d-none">
+                            <p class="collect-fee-desc">
+                                Unclaimed LP fees ready to harvest
+                            </p>
+                            <div class="flex-col-gap08">
+                                <div class="data-row">
+                                    <span
+                                        id="collect-sym0-name"
+                                        class="text-secondary-color"
+                                        >--</span
+                                    >
+                                    <div class="data-token-info">
+                                        <div
+                                            id="collect-icon-0"
+                                            class="token-icon pool-mini-icon token-icon-xs"
+                                        ></div>
+                                        <span
+                                            id="collect-amount-0"
+                                            class="success-amount-text mono-num"
+                                            >0.00</span
+                                        >
+                                    </div>
+                                </div>
+                                <div class="data-row">
+                                    <span
+                                        id="collect-sym1-name"
+                                        class="text-secondary-color"
+                                        >--</span
+                                    >
+                                    <div class="data-token-info">
+                                        <div
+                                            id="collect-icon-1"
+                                            class="token-icon pool-mini-icon token-icon-xs"
+                                        ></div>
+                                        <span
+                                            id="collect-amount-1"
+                                            class="success-amount-text mono-num"
+                                            >0.00</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Action Execute Button -->
+                        <div class="modal-actions mt-05rem">
+                            <button
+                                id="action-execute-btn"
+                                class="primary-btn glass-btn action-confirm-btn"
+                            >
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Log Container for Notifications -->
+            <div id="log-messages" class="log-container"></div>
+
+            <!-- Connect Wallet Modal -->
+            <div id="connect-modal" class="modal hidden">
+                <div class="modal-content glass-panel">
+                    <div class="modal-header">
+                        <h3>Connect Seismic Wallet</h3>
+                        <button class="close-btn" id="close-connect" aria-label="Close">
+                            <span class="material-icons-round">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="modal-desc">
+                            Enter a testnet private key or generate an ephemeral burner wallet to sign encrypted Seismic TEE transactions.
+                        </p>
+                        <div class="security-notice-box">
+                            <span class="material-icons-round" style="font-size: 16px">shield</span>
+                            <span>Testnet use only — keys stay locally in your browser session. Never enter a mainnet key.</span>
+                        </div>
+                        <div class="pk-input-wrapper">
+                            <input
+                                type="password"
+                                id="pk-input"
+                                placeholder="0x..."
+                                autocomplete="off"
+                                spellcheck="false"
+                                class="glass-input mono-num w-full pk-field-padded"
+                            />
+                            <button type="button" id="toggle-modal-pk-visibility" class="pk-eye-btn" title="Show/Hide Key" aria-label="Show or hide private key">
+                                <span class="material-icons-round" style="font-size: 18px">visibility</span>
+                            </button>
+                        </div>
+                        <div class="modal-actions">
+                            <button
+                                id="generate-pk-btn"
+                                class="secondary-btn glass-btn"
+                            >
+                                <span
+                                    class="material-icons-round"
+                                    style="font-size: 18px"
+                                    >key</span
+                                >
+                                Generate Key
+                            </button>
+                            <button
+                                id="confirm-connect-btn"
+                                class="primary-btn glass-btn"
+                            >
+                                <span
+                                    class="material-icons-round"
+                                    style="font-size: 18px"
+                                    >bolt</span
+                                >
+                                Connect
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Modal -->
+            <div id="settings-modal" class="modal hidden">
+                <div class="modal-content glass-panel">
+                    <div class="modal-header">
+                        <h3>Execution Parameters</h3>
+                        <button class="close-btn" id="close-settings" aria-label="Close">
+                            <span class="material-icons-round">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="setting-item setting-item-col">
+                            <div class="setting-row-top">
+                                <label>Slippage Tolerance (%)</label>
+                                <input
+                                    type="number"
+                                    id="slippage-input"
+                                    value="0.3"
+                                    min="0.01"
+                                    max="50"
+                                    step="0.1"
+                                    disabled
+                                    class="glass-input text-right mono-num"
+                                />
+                            </div>
+                            <div class="slippage-preset-row">
+                                <button type="button" class="slippage-preset-btn" data-slippage="0.1">0.1%</button>
+                                <button type="button" class="slippage-preset-btn active" data-slippage="0.3">0.3%</button>
+                                <button type="button" class="slippage-preset-btn" data-slippage="0.5">0.5%</button>
+                                <button type="button" class="slippage-preset-btn" data-slippage="1.0">1.0%</button>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label>Transaction Deadline (mins)</label>
+                            <input
+                                type="number"
+                                id="deadline-input"
+                                value="20"
+                                min="1"
+                                max="180"
+                                disabled
+                                class="glass-input text-right mono-num"
+                            />
+                        </div>
+                        <div class="setting-item" id="setting-fee-row">
+                            <label>Preferred Pool Fee Tier (%)</label>
+                            <select
+                                id="pool-fee-input"
+                                disabled
+                                class="glass-input text-right settings-select-disabled mono-num"
+                            >
+                                <option value="500">0.05</option>
+                                <option value="3000" selected>0.3</option>
+                                <option value="10000">1.0</option>
+                            </select>
+                        </div>
+                        <div class="modal-actions mt-1rem">
+                            <button
+                                id="advanced-toggle-btn"
+                                class="secondary-btn glass-btn w-full"
+                            >
+                                Advanced (Enable Custom Edit)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Token Selection Modal -->
+            <div id="token-modal" class="modal hidden">
+                <div class="modal-content glass-panel token-modal-content">
+                    <div class="modal-header">
+                        <h3>Select a Token</h3>
+                        <button class="close-btn" id="close-token-modal">
+                            <span class="material-icons-round">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="search-container">
+                            <span class="material-icons-round search-icon"
+                                >search</span
+                            >
+                            <input
+                                type="text"
+                                id="token-search-input"
+                                placeholder="Search symbol or paste 0x address..."
+                                class="glass-input search-input"
+                            />
+                            <button
+                                id="clear-search-btn"
+                                class="icon-btn clear-search-btn d-none"
+                            >
+                                <span class="material-icons-round">close</span>
+                            </button>
+                        </div>
+
+                        <div id="token-search-loading" class="d-none">
+                            <div class="spinner spinner-md"></div>
+                            <span>Querying on-chain token metadata...</span>
+                        </div>
+
+                        <div class="token-list" id="token-list">
+                            <!-- Default Tokens -->
+                            <div
+                                class="token-list-item"
+                                data-symbol="GMIC"
+                                data-address="0xc59fb7a8D9bf1c5863D000724c420F701B349A92"
+                            >
+                                <div
+                                    class="token-icon default-icon"
+                                    style="
+                                        background: linear-gradient(
+                                            135deg,
+                                            #10b981 0%,
+                                            #047857 100%
+                                        );
+                                        color: white;
+                                        overflow: hidden;
+                                        padding: 0;
+                                    "
+                                >
+                                    <img
+                                        src="/token-logo/gmic.png"
+                                        alt="GMIC"
+                                        class="token-logo-img"
+                                        onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                    />
+                                    <span
+                                        class="token-fallback-char"
+                                        style="display: none"
+                                        >G</span
+                                    >
+                                </div>
+                                <div class="token-info">
+                                    <span class="token-symbol">GMIC</span>
+                                    <span class="token-name"
+                                        >Seismic GMIC Token</span
+                                    >
+                                </div>
+                            </div>
+                            <div
+                                class="token-list-item"
+                                data-symbol="RFT"
+                                data-address="0x63130c77500Cebf7f6B9f01545Fc4F3925dFe007"
+                            >
+                                <div
+                                    class="token-icon default-icon bg-purple"
+                                    style="overflow: hidden; padding: 0"
+                                >
+                                    <img
+                                        src="/token-logo/rift.png"
+                                        alt="RFT"
+                                        class="token-logo-img"
+                                        onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                    />
+                                    <span
+                                        class="token-fallback-char"
+                                        style="display: none"
+                                        >R</span
+                                    >
+                                </div>
+                                <div class="token-info">
+                                    <span class="token-symbol">RFT</span>
+                                    <span class="token-name"
+                                        >Rift Protocol Token</span
+                                    >
+                                </div>
+                            </div>
+                            <div
+                                class="token-list-item"
+                                data-symbol="sUSDC"
+                                data-address="0x790701048922e265105fd6a4467a2901c2201c43"
+                            >
+                                <div
+                                    class="token-icon default-icon usdc"
+                                    style="overflow: hidden; padding: 0"
+                                >
+                                    <img
+                                        src="/token-logo/susdc.png"
+                                        alt="sUSDC"
+                                        class="token-logo-img"
+                                        onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                    />
+                                    <span
+                                        class="token-fallback-char"
+                                        style="display: none"
+                                        >S</span
+                                    >
+                                </div>
+                                <div class="token-info">
+                                    <span class="token-symbol">sUSDC</span>
+                                    <span class="token-name"
+                                        >Seismic USD Coin</span
+                                    >
+                                </div>
+                            </div>
+                            <div
+                                class="token-list-item"
+                                data-symbol="SIZE"
+                                data-address="0xnative"
+                            >
+                                <div
+                                    class="token-icon default-icon token-icon-size"
+                                    style="overflow: hidden; padding: 0"
+                                >
+                                    <img
+                                        src="/token-logo/size.png"
+                                        alt="SIZE"
+                                        class="token-logo-img"
+                                        onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"
+                                    />
+                                    <span
+                                        class="token-fallback-char"
+                                        style="display: none"
+                                        >S</span
+                                    >
+                                </div>
+                                <div class="token-info">
+                                    <span class="token-symbol">SIZE</span>
+                                    <span class="token-name"
+                                        >Seismic Native</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="no-token-found" class="d-none no-token-msg">
+                            No matching SRC-20 / ERC-20 token found.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Minimal Social Footer -->
+        <footer class="site-footer">
+            <div class="footer-glass-pill">
+                <a
+                    href="https://x.com/riftprotocolxyz"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="footer-social-link"
+                    title="Follow Rift Protocol on X"
+                >
+                    <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 22.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+                        />
+                    </svg>
+                    <span>@riftprotocolxyz</span>
+                </a>
+
+                <span class="footer-divider" aria-hidden="true"></span>
+
+                <a
+                    href="#"
+                    class="footer-social-link footer-link-disabled"
+                    aria-disabled="true"
+                    onclick="return false;"
+                    title="GitHub Repository Coming Soon"
+                >
+                    <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                        />
+                    </svg>
+                    <span>GitHub</span>
+                    <span class="footer-soon-badge">Soon</span>
+                </a>
+            </div>
+        </footer>
+
+        <script type="module" src="/src/main.ts"></script>
+    </body>
+</html>

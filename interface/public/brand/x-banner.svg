@@ -1,0 +1,81 @@
+<svg width="3000" height="1000" viewBox="0 0 1500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <!-- بک‌گراند خطی تیره به سمت راست -->
+        <linearGradient id="bg-linear-right" x1="0%" y1="50%" x2="100%" y2="50%">
+            <stop offset="0%" stop-color="#050507" />
+            <stop offset="55%" stop-color="#0B0A0E" />
+            <stop offset="100%" stop-color="#171310" />
+        </linearGradient>
+
+        <!-- گرادینت‌های خطی ۲ بعدی موج‌ها به سمت راست -->
+        <linearGradient id="wave-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#8B735B" stop-opacity="0.05" />
+            <stop offset="45%" stop-color="#CFB297" stop-opacity="0.22" />
+            <stop offset="85%" stop-color="#E6D3C1" stop-opacity="0.45" />
+            <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.6" />
+        </linearGradient>
+
+        <linearGradient id="wave-grad-2" x1="0%" y1="50%" x2="100%" y2="50%">
+            <stop offset="0%" stop-color="#050507" stop-opacity="0" />
+            <stop offset="30%" stop-color="#8B735B" stop-opacity="0.12" />
+            <stop offset="75%" stop-color="#B89C82" stop-opacity="0.3" />
+            <stop offset="100%" stop-color="#E6D3C1" stop-opacity="0.5" />
+        </linearGradient>
+
+        <linearGradient id="wave-fill-right" x1="0%" y1="50%" x2="100%" y2="50%">
+            <stop offset="0%" stop-color="#8B735B" stop-opacity="0" />
+            <stop offset="60%" stop-color="#B89C82" stop-opacity="0.04" />
+            <stop offset="100%" stop-color="#E6D3C1" stop-opacity="0.14" />
+        </linearGradient>
+
+        <!-- گرادینت‌های اصلی لوگوی Rift -->
+        <linearGradient id="rift-gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFFFFF" />
+            <stop offset="50%" stop-color="#E6D3C1" />
+            <stop offset="100%" stop-color="#B89C82" />
+        </linearGradient>
+
+        <linearGradient id="rift-dark-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#8B735B" />
+            <stop offset="100%" stop-color="#CFB297" />
+        </linearGradient>
+
+        <!-- درخشش ملایم پشت لوگو -->
+        <filter id="logo-glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="0" stdDeviation="1.8" flood-color="#E6D3C1" flood-opacity="0.35" />
+        </filter>
+    </defs>
+
+    <!-- پس‌زمینه اصلی -->
+    <rect width="1500" height="500" fill="url(#bg-linear-right)" />
+
+    <!-- لایه‌های موج ۲ بعدی در حاشیه بالا و پایین به سمت راست -->
+    <path d="M0 0 H1500 V190 C1220 190 1080 65 760 85 C440 105 260 25 0 40 Z" fill="url(#wave-fill-right)" />
+    <path d="M0 500 H1500 V310 C1200 310 1040 445 720 420 C400 395 240 475 0 465 Z" fill="url(#wave-fill-right)" />
+
+    <!-- خطوط موج‌دار ۲ بعدی با افکت رنگی خطی به سمت راست (حاشیه بالا) -->
+    <path d="M-50 45 C280 20 460 115 780 90 C1100 65 1260 185 1550 165" stroke="url(#wave-grad-1)" stroke-width="3" fill="none" />
+    <path d="M-50 80 C300 55 490 150 820 120 C1140 90 1300 225 1550 205" stroke="url(#wave-grad-2)" stroke-width="1.5" fill="none" />
+    <path d="M200 15 C520 5 680 75 980 55 C1240 35 1380 125 1550 115" stroke="url(#wave-grad-2)" stroke-width="1" stroke-dasharray="12 8" fill="none" />
+
+    <!-- خطوط موج‌دار ۲ بعدی با افکت رنگی خطی به سمت راست (حاشیه پایین) -->
+    <path d="M-50 460 C280 480 460 390 780 415 C1100 440 1260 315 1550 335" stroke="url(#wave-grad-1)" stroke-width="3" fill="none" />
+    <path d="M-50 425 C300 445 490 355 820 385 C1140 415 1300 275 1550 295" stroke="url(#wave-grad-2)" stroke-width="1.5" fill="none" />
+
+    <!-- پرتوهای خطی ۲ بعدی افقی در سمت راست حاشیه -->
+    <line x1="950" y1="250" x2="1500" y2="250" stroke="url(#wave-grad-2)" stroke-width="2" />
+    <line x1="1080" y1="234" x2="1500" y2="234" stroke="url(#wave-grad-2)" stroke-width="1" />
+    <line x1="1080" y1="266" x2="1500" y2="266" stroke="url(#wave-grad-2)" stroke-width="1" />
+
+    <!-- لوگوی اصلی Rift در مرکز کادر امن بنر -->
+    <g transform="translate(638, 138) scale(7)" filter="url(#logo-glow)">
+        <!-- Outer Shielded Octagon / Diamond Frame -->
+        <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" fill="#E6D3C1" fill-opacity="0.06" stroke="url(#rift-gold-grad)" stroke-width="1.5" />
+        <!-- Left Rift Shard -->
+        <path d="M15.5 6L7.5 15.5H13.5L11.5 25L15.5 17.5V6Z" fill="url(#rift-gold-grad)" />
+        <!-- Right Liquidity Shard -->
+        <path d="M17.5 7.5V15L21.5 9L19.5 16.5H24.5L16.5 26V17.5L17.5 7.5Z" fill="url(#rift-dark-grad)" />
+        <!-- Core Rift Portal Dot -->
+        <circle cx="16" cy="16" r="2" fill="#FFFFFF" />
+    </g>
+</svg>

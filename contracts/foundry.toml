@@ -1,0 +1,13 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+
+solc_version = "0.8.31"
+optimizer = true
+optimizer_runs = 1
+via_ir = true
+unsafe_via_ir = true
+
+[rpc_endpoints]
+seismic_testnet = "${SEISMIC_RPC_URL}"

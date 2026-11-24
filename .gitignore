@@ -1,0 +1,40 @@
+# Environment & secrets (strictly excluded)
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.key
+*.pem
+*secret*
+!SECURITY.md
+*private*
+keystore*
+
+# Node / Vite / Frontend
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.vite/
+*.tsbuildinfo
+
+# Foundry / Smart Contracts
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/lcov.info
+
+# Supabase local & temp artifacts
+.supabase/
+**/.supabase/
+supabase/.temp/
+**/.temp/
+
+# OS / Editor artifacts
+.DS_Store
+Thumbs.db
+*:Zone.Identifier
+.vscode/
+.idea/
+*.swp
+*.log

@@ -1,0 +1,31 @@
+<svg width="2048" height="2048" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="rift-gold-grad-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFFFFF" />
+            <stop offset="50%" stop-color="#E6D3C1" />
+            <stop offset="100%" stop-color="#B89C82" />
+        </linearGradient>
+        <linearGradient id="rift-dark-grad-dark" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#8B735B" />
+            <stop offset="100%" stop-color="#CFB297" />
+        </linearGradient>
+        <filter id="rift-glow-dark" x="-25%" y="-25%" width="150%" height="150%">
+            <feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#E6D3C1" flood-opacity="0.35" />
+        </filter>
+    </defs>
+
+    <!-- Black Background -->
+    <rect width="40" height="40" fill="#000000" />
+
+    <!-- Centered Logo with Native Glow -->
+    <g transform="translate(4, 4)" filter="url(#rift-glow-dark)">
+        <!-- Outer Shielded Octagon / Diamond Frame -->
+        <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" fill="#E6D3C1" fill-opacity="0.06" stroke="url(#rift-gold-grad-dark)" stroke-width="1.5" />
+        <!-- Left Rift Shard -->
+        <path d="M15.5 6L7.5 15.5H13.5L11.5 25L15.5 17.5V6Z" fill="url(#rift-gold-grad-dark)" />
+        <!-- Right Liquidity Shard -->
+        <path d="M17.5 7.5V15L21.5 9L19.5 16.5H24.5L16.5 26V17.5L17.5 7.5Z" fill="url(#rift-dark-grad-dark)" />
+        <!-- Core Rift Portal Dot -->
+        <circle cx="16" cy="16" r="2" fill="#FFFFFF" />
+    </g>
+</svg>
